@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <title>Quiz ชีวะ</title>
+  <style>
+    body {
+      font-family: "Sarabun", sans-serif;
+      max-width: 600px;
+      margin: 30px auto;
+      padding: 20px;
+      background: #f7f9fc;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #ccc;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    .question {
+      margin: 20px 0;
+      font-weight: bold;
+    }
+    .choices button {
+      display: block;
+      width: 100%;
+      margin: 8px 0;
+      padding: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      background-color: #3498db;
+      color: white;
+      transition: background-color 0.3s ease;
+    }
+    .choices button:hover {
+      background-color: #2980b9;
+    }
+    .choices button.correct {
+      background-color: #2ecc71 !important;
+    }
+    .choices button.wrong {
+      background-color: #e74c3c !important;
+    }
+    .result {
+      margin-top: 30px;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+      color: #34495e;
+    }
+  </style>
+</head>
+<body>
+  <h1>Quiz ชีวะ</h1>
+  <div id="quiz-container">
+    <div id="question" class="question"></div>
+    <div id="choices" class="choices"></div>
+  </div>
+  <div id="result" class="result"></div>
+
+  <script>
+    const quizData = [
+      {
+        question: "ส่วนใดของเซลล์ทำหน้าที่ควบคุมกิจกรรม?",
+        choices: ["Nucleus", "Mitochondria", "Ribosome"],
+        answer: "Nucleus"
+      },
+      {
+        question: "พืชสร้างอาหารโดยกระบวนการใด?",
+        choices: ["Photosynthesis", "Respiration", "Fermentation"],
+        answer: "Photosynthesis"
+      },
+      {
+        question: "ดีเอ็นเอเป็นสารพันธุกรรมของสิ่งมีชีวิตประเภทใด?",
+        choices: ["ทุกชนิด", "เฉพาะสัตว์", "เฉพาะพืช"],
+        answer: "ทุกชนิด"
+      }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById("question");
+    const choicesEl = document.getElementById("choices");
+    const resultEl = document.getElementById("result");
+
+    function loadQuestion() {
+      const currentQ = quizData[currentQuestionIndex];
+      questionEl.textContent = `ข้อที่ ${currentQuestionIndex + 1}: ${currentQ.question}`;
+      choicesEl.innerHTML = "";
+
+      currentQ.choices.forEach(choice => {
+        const btn = document.createElement("button");
+        btn.textContent = choice;
+        btn.onclick = () => selectAnswer(btn, currentQ.answer);
+        choicesEl.appendChild(btn);
+      });
+
+      resultEl.textContent = "";
+    }
+
+    function selectAnswer(button, correctAnswer) {
+      const buttons = choicesEl.querySelectorAll("button");
+      buttons.forEach(btn => btn.disabled = true);
+
+      if (button.textContent === correctAnswer) {
+        button.classList.add("correct");
+        resultEl.textContent = "✅ ถูกต้อง!";
+        score++;
+      } else {
+        button.classList.add("wrong");
+        resultEl.textContent = `❌ ผิด! คำตอบที่ถูกคือ: ${correctAnswer}`;
+      }
+
+      setTimeout(() => {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizData.length) {
+          loadQuestion();
+        } else {
+          showFinalResult();
+        }
+      }, 1500);
+    }
+
+    function showFinalResult() {
+      questionEl.textContent = "Quiz จบแล้ว!";
+      choicesEl.innerHTML = "";
+      resultEl.textContent = `คุณได้ ${score} จาก ${quizData.length} คะแนน 🎉`;
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
